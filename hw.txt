@@ -1,0 +1,46 @@
+Problem 1 :Calculate Special Bonus
+
+def calculate_special_bonus(employees: pd.DataFrame) -> pd.DataFrame:
+    my_list = []
+    for i in range(len(employees)):
+        if employees['employee_id'][i] % 2 != 0 and employees['name'][i][0] != 'M':
+            my_list.append((employees['employee_id'][i] , employees['salary'][i]))
+        else :
+            my_list.append((employees['employee_id'][i] , 0))
+    df = pd.DataFrame(my_list).rename(columns = {0 : 'employee_id', 1 : 'bonus'})
+    df.sort_values(by = ['employee_id'], inplace = True)
+    return df
+
+WITH LAMBDA FUNCTION
+
+def calculate_special_bonus(employees: pd.DataFrame) -> pd.DataFrame:
+   employees['bonus'] = employees.apply(lambda x : x['salary']
+   if x['employee_id'] % 2 != 0 and not x['name'].startswith('M') else 0, axis = 1)
+   return employees[['employee_id', 'bonus']].sort_values(by = ['employee_id'])
+
+
+Problem 2 : Fix Names in a Table
+
+def fix_names(users: pd.DataFrame) -> pd.DataFrame:
+    users['name'] = users['name'].str[0].str.upper() + users['name'].str[1:].str.lower()
+    return users.sort_values(by = ['user_id'])
+
+
+Problem 3 : Patients with a Condition
+
+def find_patients(patients: pd.DataFrame) -> pd.DataFrame:
+    my_list = []
+    for i in range(len(patients)):
+        p_id = patients['patient_id'][i]
+        p_name = patients['patient_name'][i]
+        conditions = patients['conditions'][i]
+        for condition in conditions.split():
+            if condition.startswith('DIAB1'):
+                my_list.append([p_id, p_name, conditions])
+                break
+    return pd.DataFrame(my_list, columns = ['patient_id', 'patient_name', 'conditions'])
+
+
+def find_patients(patients: pd.DataFrame) -> pd.DataFrame:
+    df = patients[patients['conditions'].str.startswith('DIAB1') | patients['conditions'].str.contains(' DIAB1')]
+    return df
